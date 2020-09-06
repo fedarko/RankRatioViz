@@ -7,8 +7,8 @@ from qurro.tests.testing_utilities import (
 def test_byrd():
     """Tests Qurro's JSON generation on the Byrd et al. 2017 dataset.
 
-       This is really a test to make sure that qurro can properly handle
-       songbird output.
+    This is really a test to make sure that qurro can properly handle
+    songbird output.
     """
     run_integration_test(
         "byrd",
@@ -22,8 +22,8 @@ def test_byrd():
 def test_sleep_apnea():
     """Tests Qurro's JSON generation on a "sleep apnea" dataset.
 
-       This is really a test to make sure that qurro can properly handle
-       DEICODE output.
+    This is really a test to make sure that qurro can properly handle
+    DEICODE output.
     """
     run_integration_test(
         "sleep_apnea",
@@ -37,10 +37,10 @@ def test_sleep_apnea():
 
 def test_red_sea():
     """Tests Qurro's JSON generation on a dataset from a study of the Red
-       Sea.
+    Sea.
 
-       This is really a test to make sure that qurro can properly handle
-       this sort of unconventionally-named-feature data.
+    This is really a test to make sure that qurro can properly handle
+    this sort of unconventionally-named-feature data.
     """
     run_integration_test(
         "red_sea",
@@ -54,11 +54,11 @@ def test_red_sea():
 
 def test_sample_dropping_stats():
     """Tests Qurro's JSON generation on a dataset with weird sample
-       metadata.
+    metadata.
 
-       The output from this test will be used in JS tests -- this verifies that
-       both the python and JS parts of Qurro can handle weird metadata
-       appropriately.
+    The output from this test will be used in JS tests -- this verifies that
+    both the python and JS parts of Qurro can handle weird metadata
+    appropriately.
     """
     rank_json, sample_json, count_json = run_integration_test(
         "sample_stats_test",
@@ -73,10 +73,10 @@ def test_sample_dropping_stats():
 
 def test_mackerel():
     """Tests Qurro's JSON generation on the mackerel dataset (Qiita Study ID
-       11721).
+    11721).
 
-       This is less of a test and more of just a way to ensure that we
-       continuously update the mackerel demo whenever we update Qurro.
+    This is less of a test and more of just a way to ensure that we
+    continuously update the mackerel demo whenever we update Qurro.
     """
     run_integration_test(
         "mackerel",

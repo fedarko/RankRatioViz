@@ -62,13 +62,13 @@ def plot(
 ) -> None:
     """Generates a visualization of feature rankings and log-ratios.
 
-       The resulting visualization contains two plots. The first plot shows
-       how features are ranked, and the second plot shows the log-ratio
-       of "selected" features' abundances within samples.
+    The resulting visualization contains two plots. The first plot shows
+    how features are ranked, and the second plot shows the log-ratio
+    of "selected" features' abundances within samples.
 
-       The visualization is interactive, so which features are "selected" to
-       construct log-ratios -- as well as various other properties of the
-       visualization -- can be changed by the user.
+    The visualization is interactive, so which features are "selected" to
+    construct log-ratios -- as well as various other properties of the
+    visualization -- can be changed by the user.
     """
 
     # inspired by https://stackoverflow.com/a/14098306/10730311

@@ -178,8 +178,8 @@ def test_replace_nan():
 def get_test_data():
     """Returns test table, metadata, and ranks DataFrames.
 
-       Mostly based on/copied from get_test_data() in
-       test_filter_unextreme_features.
+    Mostly based on/copied from get_test_data() in
+    test_filter_unextreme_features.
     """
     feature_ids = ["F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8"]
     table = DataFrame(
@@ -212,7 +212,7 @@ def get_test_data():
 
 def test_remove_empty_samples_and_features_samples():
     """Tests remove_empty_samples_and_features() in the simple cases of
-       removing 0, 1, and 2 empty sample(s).
+    removing 0, 1, and 2 empty sample(s).
     """
 
     # TRY REMOVING 0 SAMPLES
@@ -273,7 +273,7 @@ def test_remove_empty_samples_and_features_samples():
 
 def test_remove_empty_samples_and_features_features():
     """Tests remove_empty_samples_and_features() in the simple cases of
-       removing 1 and then 2 empty feature(s).
+    removing 1 and then 2 empty feature(s).
     """
 
     table, metadata, ranks = get_test_data()
@@ -313,7 +313,7 @@ def test_remove_empty_samples_and_features_features():
 
 def test_remove_empty_samples_and_features_both():
     """Tests remove_empty_samples_and_features() when both samples and features
-       are empty.
+    are empty.
     """
 
     table, metadata, ranks = get_test_data()
@@ -824,8 +824,8 @@ def test_match_table_and_data_complex(capsys):
 
 def verify_spc_data_integrity(output_feature_data, initial_feature_data):
     """Checks that add_sample_presence_count() doesn't change any of the
-       initially input feature_data -- it just adds a qurro_spc column, and
-       doesn't change the DF in any other way.
+    initially input feature_data -- it just adds a qurro_spc column, and
+    doesn't change the DF in any other way.
     """
     ifd_in_ofd = output_feature_data.drop("qurro_spc", axis="columns")
     assert_frame_equal(ifd_in_ofd, initial_feature_data)
@@ -885,10 +885,10 @@ def test_add_sample_presence_count_zeros():
 
 def test_add_sample_presence_count_name_error():
     """Checks the case where the feature data already contains a column
-       called qurro_spc.
+    called qurro_spc.
 
-       This should never happen due to check_column_names() being called, but
-       we might as well be careful.
+    This should never happen due to check_column_names() being called, but
+    we might as well be careful.
     """
     table, metadata, ranks = get_test_data()
     ranks.columns = ["Rank 0", "qurro_spc"]
@@ -898,7 +898,7 @@ def test_add_sample_presence_count_name_error():
 
 def test_vibe_check_safe_range_invalid_safe_ranges():
     """Checks cases where the input range specified to vibe_check() is somehow
-       invalid.
+    invalid.
     """
     table, metadata, ranks = get_test_data()
 

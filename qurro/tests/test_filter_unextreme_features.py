@@ -80,7 +80,7 @@ def test_filtering_basic():
 
 def test_filtering_large_efc():
     """Tests filter_unextreme_features() when (the extreme feature count * 2)
-       is greater than or equal to the number of ranked features.
+    is greater than or equal to the number of ranked features.
     """
 
     table, ranks = get_test_data()
@@ -97,8 +97,8 @@ def test_filtering_large_efc():
 
 def test_filtering_no_efc():
     """Tests filter_unextreme_features() when the extreme feature count is None
-       (i.e. the user didn't use the -x option, and no filtering should be
-       done).
+    (i.e. the user didn't use the -x option, and no filtering should be
+    done).
     """
 
     table, ranks = get_test_data()
@@ -112,7 +112,7 @@ def test_filtering_no_efc():
 
 def test_filtering_invalid_efc():
     """Tests that filter_unextreme_features() throws an error when the
-       extreme feature count is less than 1 and/or not an integer.
+    extreme feature count is less than 1 and/or not an integer.
     """
 
     table, ranks = get_test_data()
@@ -135,7 +135,7 @@ def test_filtering_invalid_efc():
 
 def test_filtering_to_empty_features():
     """Integration test for the odd corner case where the "extreme" features
-       are all empty.
+    are all empty.
     """
     # Sorry this code is kinda gross
     table, metadata, ranks = get_test_data_2()

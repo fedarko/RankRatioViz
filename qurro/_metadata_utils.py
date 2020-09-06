@@ -16,26 +16,26 @@ from ._df_utils import replace_nan
 def get_q2_comment_lines(md_file_loc):
     """Returns a list of line numbers in the file that start with "#q2:".
 
-       These lines should be skipped when parsing the file outside of Q2 (i.e.
-       in pandas). I guess we could also ostensibly use these lines' types here
-       eventually, but for now we just skip them.
+    These lines should be skipped when parsing the file outside of Q2 (i.e.
+    in pandas). I guess we could also ostensibly use these lines' types here
+    eventually, but for now we just skip them.
 
-       Notes:
-        -The line numbers are 0-indexed (so they can easily be thrown in to
-         pandas.read_csv() as the skiprows parameter)
-        -This doesn't check check the first line of the file (assumed to be the
-         header)
-        -This stops checking lines once it gets to the first non-header line
-         that doesn't start with "#q2:". Currently, "#q2:types" is the only Q2
-         "comment directive" available, but ostensibly this could detect future
-         Q2 comment directives.
-        -This checks if md_file_loc is of type StringIO. If so, this will
-         handle it properly (iterating over it directly); otherwise, this
-         assumes that md_file_loc is an actual filename, and this will open
-         it using open().
-         (I realize that ideally this wouldn't have to do any type checking,
-         but it's either this or do a bunch of weird refactoring to get my test
-         code working.)
+    Notes:
+     -The line numbers are 0-indexed (so they can easily be thrown in to
+      pandas.read_csv() as the skiprows parameter)
+     -This doesn't check check the first line of the file (assumed to be the
+      header)
+     -This stops checking lines once it gets to the first non-header line
+      that doesn't start with "#q2:". Currently, "#q2:types" is the only Q2
+      "comment directive" available, but ostensibly this could detect future
+      Q2 comment directives.
+     -This checks if md_file_loc is of type StringIO. If so, this will
+      handle it properly (iterating over it directly); otherwise, this
+      assumes that md_file_loc is an actual filename, and this will open
+      it using open().
+      (I realize that ideally this wouldn't have to do any type checking,
+      but it's either this or do a bunch of weird refactoring to get my test
+      code working.)
     """
 
     def iterate_over_file_obj_lines(file_obj):
@@ -72,16 +72,16 @@ def get_q2_comment_lines(md_file_loc):
 def read_metadata_file(md_file_loc):
     """Reads in a metadata file using pandas.read_csv().
 
-       This treats all metadata values (including the index column) as
-       strings, due to the use of dtype=object.
+    This treats all metadata values (including the index column) as
+    strings, due to the use of dtype=object.
 
-       NOTE THAT THIS WILL CONVERT empty cells in the TSV file to
-       np.NaN values in the output DataFrame -- this is done to be
-       consistent with QIIME2's Metadata utilities. If you don't want
-       NaNs in your DataFrame, just call qurro._df_utils.replace_nan()
-       on the DataFrame you get from this function: e.g.
-       metadata_df = replace_nan(read_metadata_file(...)). (You can also just
-       call read_metadata_file_sane(), which will do this for you.)
+    NOTE THAT THIS WILL CONVERT empty cells in the TSV file to
+    np.NaN values in the output DataFrame -- this is done to be
+    consistent with QIIME2's Metadata utilities. If you don't want
+    NaNs in your DataFrame, just call qurro._df_utils.replace_nan()
+    on the DataFrame you get from this function: e.g.
+    metadata_df = replace_nan(read_metadata_file(...)). (You can also just
+    call read_metadata_file_sane(), which will do this for you.)
     """
     q2_lines = get_q2_comment_lines(md_file_loc)
     metadata_df = pd.read_csv(
@@ -129,12 +129,12 @@ def read_metadata_file(md_file_loc):
 def read_metadata_file_sane(md_file_loc):
     """Convenience function for reading metadata non-intrusively.
 
-       Basically, this just calls read_metadata_file() (also defined in this
-       module), then calls replace_nan() on that (note: replacing NaNs with ""
-       instead of None), then returns the result.
+    Basically, this just calls read_metadata_file() (also defined in this
+    module), then calls replace_nan() on that (note: replacing NaNs with ""
+    instead of None), then returns the result.
 
-       If you're just looking in this module for an easy "read my metadata"
-       function, you may prefer to use this function instead of
-       read_metadata_file().
+    If you're just looking in this module for an easy "read my metadata"
+    function, you may prefer to use this function instead of
+    read_metadata_file().
     """
     return replace_nan(read_metadata_file(md_file_loc), "")

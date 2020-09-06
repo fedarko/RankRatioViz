@@ -35,10 +35,10 @@ def test_integration_q2_sleep_apnea():
 
 def test_integration_q2_red_sea():
     """Tests qurro on songbird output with non-strictly-16S data in the
-       context of QIIME 2.
+    context of QIIME 2.
 
-       (Technically the Byrd data is also from a metagenomic study, but the
-       features here are named pretty differently.)
+    (Technically the Byrd data is also from a metagenomic study, but the
+    features here are named pretty differently.)
     """
     run_integration_test(
         "red_sea",
@@ -54,7 +54,7 @@ def test_integration_q2_red_sea():
 
 def test_moving_pictures():
     """Tests qurro' JSON generation on the "Moving Pictures of the Human
-       Microbiome" dataset.
+    Microbiome" dataset.
     """
     run_integration_test(
         "moving_pictures",
@@ -70,7 +70,7 @@ def test_moving_pictures():
 
 def test_sample_dropping_stats():
     """Tests Qurro's JSON generation on a dataset with weird sample
-       metadata.
+    metadata.
     """
     rank_json, sample_json, count_json = run_integration_test(
         "sample_stats_test",

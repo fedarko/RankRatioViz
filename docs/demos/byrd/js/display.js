@@ -64,6 +64,14 @@ define([
             // the sample plot.
             this.sampleCount = this.sampleIDs.length;
 
+            // Boolean variable: true if we should exclude x-axis and color
+            // sample metadata fields from the exported sample plot TSV, and
+            // false if we should include these fields.
+            // This functionality is mostly here so that exported log-ratios
+            // can be merged with the original sample metadata file
+            // (relatively) painlessly. (This is done in the Gemelli tutorial.)
+            this.exclSMFieldsInExport = false;
+
             // a mapping from "reason" (i.e. "balance", "xAxis", "color") to
             // list of dropped sample IDs.
             //
@@ -185,6 +193,9 @@ define([
                     },
                     borderCheckbox: async function () {
                         await display.updateSamplePlotBorders();
+                    },
+                    exclSMFieldsInExportCheckbox: function () {
+                        display.updateExclSMFieldsInExport();
                     },
                     catColorScheme: async function () {
                         await display.updateSamplePlotColorScheme("category");
@@ -1141,6 +1152,16 @@ define([
             }
         }
 
+        /* Updates this.exclSMFieldsInExport based on its corresponding
+         * checkbox's status. (See the documentation of this variable in the
+         * constructor for details on what this does.)
+         */
+        updateExclSMFieldsInExport() {
+            this.exclSMFieldsInExport = document.getElementById(
+                "exclSMFieldsInExportCheckbox"
+            ).checked;
+        }
+
         addSamplePlotBorders() {
             this.samplePlotJSON.mark.stroke = "#000000";
             this.samplePlotJSON.mark.strokeWidth = 0.5;
@@ -1362,16 +1383,23 @@ define([
         /* Exports data from the sample plot to a string that can be written to
          * a .tsv file for further analysis of these data.
          *
-         * If no points have been "drawn" on the sample plot -- i.e. they all
-         * have a qurro_balance attribute of null -- then this just returns an
-         * empty string.
+         * The number of columns in the exported data depends on
+         * this.exclSMFieldsInExport's value; if it's true then there will just
+         * be two columns (sample ID and log-ratio), and if it's false then
+         * there'll be four columns (sample ID, log-ratio, x-axis field, color
+         * field).
          */
         getSamplePlotData(currXField, currColorField) {
-            var outputTSV =
-                '"Sample ID"\tCurrent_Natural_Log_Ratio\t' +
-                RRVDisplay.quoteTSVFieldIfNeeded(currXField) +
-                "\t" +
-                RRVDisplay.quoteTSVFieldIfNeeded(currColorField);
+            var inclSMFields = !this.exclSMFieldsInExport;
+            // Set up TSV header
+            var outputTSV = '"Sample ID"\tCurrent_Natural_Log_Ratio';
+            if (inclSMFields) {
+                outputTSV +=
+                    "\t" +
+                    RRVDisplay.quoteTSVFieldIfNeeded(currXField) +
+                    "\t" +
+                    RRVDisplay.quoteTSVFieldIfNeeded(currColorField);
+            }
             var dataName = this.samplePlotJSON.data.name;
             // Get all of the data available to the sample plot
             // (Note that updateLogRatio() causes updates to samples'
@@ -1385,13 +1413,15 @@ define([
                 );
                 outputTSV +=
                     "\n" + currSampleID + "\t" + String(data[i].qurro_balance);
-                currXValue = RRVDisplay.quoteTSVFieldIfNeeded(
-                    String(data[i][currXField])
-                );
-                currColorValue = RRVDisplay.quoteTSVFieldIfNeeded(
-                    String(data[i][currColorField])
-                );
-                outputTSV += "\t" + currXValue + "\t" + currColorValue;
+                if (inclSMFields) {
+                    currXValue = RRVDisplay.quoteTSVFieldIfNeeded(
+                        String(data[i][currXField])
+                    );
+                    currColorValue = RRVDisplay.quoteTSVFieldIfNeeded(
+                        String(data[i][currColorField])
+                    );
+                    outputTSV += "\t" + currXValue + "\t" + currColorValue;
+                }
             }
             return outputTSV;
         }
@@ -1505,6 +1535,10 @@ define([
                 document.getElementById("boxplotCheckbox").checked = false;
                 // ... And the sample border checkbox
                 document.getElementById("borderCheckbox").checked = false;
+                // ... And the "exclude metadata fields" checkbox
+                document.getElementById(
+                    "exclSMFieldsInExportCheckbox"
+                ).checked = false;
 
                 // Enable the elements that would've been disabled if we were
                 // in boxplot mode

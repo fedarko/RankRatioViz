@@ -21,7 +21,7 @@ in this repository or email the Qurro development team
        install Qurro along with its normal and development Python dependencies.
     4. Install the various Node.js requirements for testing Qurro's JavaScript
        code. This can be done by running
-       `npm install -g mocha-headless-chrome jshint prettier nyc`. Note that
+       `npm install -g mocha-headless-chrome jshint prettier@2.0.5 nyc`. Note that
        this will install these programs globally on your system.
 3. Run the following commands to verify everything was installed correctly:
 ```bash

@@ -139,7 +139,10 @@ def qarcoal(
         raise ValueError("Feature table has negative counts!")
 
     tax_num_df, tax_denom_df = filter_and_join_taxonomy(
-        feat_table, taxonomy, num_string, denom_string,
+        feat_table,
+        taxonomy,
+        num_string,
+        denom_string,
     )
 
     # if shared features are disallowed, check to make sure they don't occur

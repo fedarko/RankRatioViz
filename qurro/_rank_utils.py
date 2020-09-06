@@ -36,7 +36,7 @@ def read_rank_file(file_loc):
 def rename_loadings(loadings_df):
     """Renames a DataFrame of loadings to say "Axis 1", "Axis 2", etc.
 
-       This should match what Emperor does in its visualizations.
+    This should match what Emperor does in its visualizations.
     """
 
     loadings_df_copy = loadings_df.copy()
@@ -107,56 +107,56 @@ def filter_unextreme_features(
 ) -> None:
     """Returns copies of the table and ranks with "unextreme" features removed.
 
-       This assumes that the table and ranks have already been matched (i.e.
-       their indices are now identical). If this isn't the case, the behavior
-       of this function is undefined (I'm pretty sure it will make the print
-       messages incorrect at minimum).
+    This assumes that the table and ranks have already been matched (i.e.
+    their indices are now identical). If this isn't the case, the behavior
+    of this function is undefined (I'm pretty sure it will make the print
+    messages incorrect at minimum).
 
-       Parameters
-       ----------
+    Parameters
+    ----------
 
-       table: pd.SparseDataFrame
-            A SparseDataFrame representation of a BIOM table. This can be
-            generated easily from a biom.Table object using
-            qurro._df_utils.biom_table_to_sparse_df().
+    table: pd.SparseDataFrame
+         A SparseDataFrame representation of a BIOM table. This can be
+         generated easily from a biom.Table object using
+         qurro._df_utils.biom_table_to_sparse_df().
 
-       ranks: pandas.DataFrame
-            A DataFrame where the index consists of ranked features' IDs, and
-            the columns correspond to the various ranking(s) for which each
-            feature should have a numeric value.
+    ranks: pandas.DataFrame
+         A DataFrame where the index consists of ranked features' IDs, and
+         the columns correspond to the various ranking(s) for which each
+         feature should have a numeric value.
 
-       extreme_feature_count: int
-            An integer representing the number of features from each "end" of
-            the feature rankings to preserve in the table. If this is None, the
-            input table and ranks will just be returned.
-            This has to be at least 1.
+    extreme_feature_count: int
+         An integer representing the number of features from each "end" of
+         the feature rankings to preserve in the table. If this is None, the
+         input table and ranks will just be returned.
+         This has to be at least 1.
 
-       Returns
-       -------
+    Returns
+    -------
 
-       (table, ranks): (pandas.SparseDataFrame, pandas.DataFrame)
-            Filtered copies of the input table and ranks DataFrames.
+    (table, ranks): (pandas.SparseDataFrame, pandas.DataFrame)
+         Filtered copies of the input table and ranks DataFrames.
 
-       Behavior
-       --------
+    Behavior
+    --------
 
-       As an example of how this function works:
+    As an example of how this function works:
 
-       If extreme_feature_count is equal to 3, and if there are 5 "rankings"
-       (i.e. non-feature-ID columns) in the ranks DataFrame, then somewhere
-       in the inclusive range of 6 to 30 features will be preserved.
+    If extreme_feature_count is equal to 3, and if there are 5 "rankings"
+    (i.e. non-feature-ID columns) in the ranks DataFrame, then somewhere
+    in the inclusive range of 6 to 30 features will be preserved.
 
-       The 3 * 2 = 6 extreme features of the first ranking will be identified,
-       and then extrema will be identified for the remaining four rankings. If
-       all of the extreme features are the same between rankings, then only the
-       six extrema will be preserved; however, if all of the rankings have
-       distinct extrema, then each of the 5 rankings will have 6 extreme
-       features preserved, making a total of (3 * 2) * 5 = 30 features.
+    The 3 * 2 = 6 extreme features of the first ranking will be identified,
+    and then extrema will be identified for the remaining four rankings. If
+    all of the extreme features are the same between rankings, then only the
+    six extrema will be preserved; however, if all of the rankings have
+    distinct extrema, then each of the 5 rankings will have 6 extreme
+    features preserved, making a total of (3 * 2) * 5 = 30 features.
 
-       If (extreme_feature_count * 2) is greater than or equal to the total
-       number of features in the ranks DataFrame, this won't do any filtering
-       at all. In this case, a warning message will be printed from this
-       function, and the given table and ranks inputs will be returned.
+    If (extreme_feature_count * 2) is greater than or equal to the total
+    number of features in the ranks DataFrame, this won't do any filtering
+    at all. In this case, a warning message will be printed from this
+    function, and the given table and ranks inputs will be returned.
     """
 
     logging.debug('Starting to filter "unextreme" features.')

@@ -42,10 +42,10 @@ def test_dropping_all_samples():
 def test_dropping_all_samples_and_features():
     """Tests Qurro's behavior when > 0 feature(s) and all samples are unsupported.
 
-       In particular, qurro should just throw an error about the
-       feature(s) being unsupported -- the feature check should come before the
-       sample check (not for any particular reason, that's just how I wrote the
-       code).
+    In particular, qurro should just throw an error about the
+    feature(s) being unsupported -- the feature check should come before the
+    sample check (not for any particular reason, that's just how I wrote the
+    code).
     """
     run_integration_test(
         "matching_test",
@@ -71,7 +71,7 @@ def test_dropping_all_samples_and_features():
 
 def test_feature_metadata_and_dropped_sample():
     """Tests the behavior of Qurro in matching sample metadata, feature
-       metadata, ranks, and the BIOM table together.
+    metadata, ranks, and the BIOM table together.
     """
 
     rank_json, sample_json, count_json = run_integration_test(

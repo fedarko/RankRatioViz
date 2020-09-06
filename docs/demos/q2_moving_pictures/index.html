@@ -454,7 +454,7 @@
                                     class="questionmark mr-0"
                                     data-toggle="tooltip"
                                     data-placement="top"
-                                    title="This button exports a TSV file describing the data underlying the sample plot. Below the header row in the TSV file, each row contains a sample's ID along with the sample's currently selected log-ratio and its metadata values for the current x-axis and color fields."
+                                    title="This button exports a TSV file describing the data underlying the sample plot. Below the header row in the TSV file, each row contains a sample's ID along with the sample's currently selected log-ratio and (if the &#34;Exclude metadata fields from exported data?&#34; checkbox is checked) the sample's metadata values for the current x-axis and color fields."
                                 >
                                 </span>
                             </label>
@@ -464,6 +464,27 @@
                             >
                                 Export current sample plot data
                             </button>
+                        </div>
+                        <div class="input-group-prepend">
+                            <label
+                                class="input-group-text"
+                                for="exclSMFieldsInExportCheckbox"
+                            >
+                                <span
+                                    class="questionmark"
+                                    data-toggle="tooltip"
+                                    data-placement="top"
+                                    title="When checked, metadata fields for the x-axis and selected color scheme will *not* be included in the exported TSV of the sample plot data -- so the exported TSV will only contain information about each sample's ID and current log-ratio. Including these fields (i.e. leaving this checkbox unchecked) is usually helpful, but if you want to merge these log-ratios back into the sample metadata then excluding these fields (i.e. checking this checkbox) can make that easier (since it'll avoid duplicating the metadata columns)."
+                                >
+                                </span>
+                                Exclude metadata fields from exported data?
+                            </label>
+                            <div class="input-group-text">
+                                <input
+                                    type="checkbox"
+                                    id="exclSMFieldsInExportCheckbox"
+                                />
+                            </div>
                         </div>
                         <input
                             type="text"

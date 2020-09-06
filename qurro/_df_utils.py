@@ -14,19 +14,19 @@ import pandas as pd
 def ensure_df_headers_unique(df, df_name):
     """Raises an error if the index or columns of the DataFrame aren't unique.
 
-       (If both index and columns are non-unique, the index error will take
-       precedence.)
+    (If both index and columns are non-unique, the index error will take
+    precedence.)
 
-       If these fields are unique, no errors are raised and nothing (None) is
-       implicitly returned.
+    If these fields are unique, no errors are raised and nothing (None) is
+    implicitly returned.
 
-       Parameters
-       ----------
+    Parameters
+    ----------
 
-       df: pandas.DataFrame
-       df_name: str
-           The "name" of the DataFrame -- this is displayed to the user in the
-           error message thrown if the DataFrame has any non-unique IDs.
+    df: pandas.DataFrame
+    df_name: str
+        The "name" of the DataFrame -- this is displayed to the user in the
+        error message thrown if the DataFrame has any non-unique IDs.
     """
     if len(df.index.unique()) != df.shape[0]:
         raise ValueError(
@@ -42,10 +42,10 @@ def ensure_df_headers_unique(df, df_name):
 def validate_df(df, name, min_row_ct, min_col_ct):
     """Does some basic validation on the DataFrame.
 
-       1. Calls ensure_df_headers_unique() to ensure that index and column
-          names are unique.
-       2. Checks that the DataFrame has at least min_row_ct rows.
-       3. Checks that the DataFrame has at least min_col_ct columns.
+    1. Calls ensure_df_headers_unique() to ensure that index and column
+       names are unique.
+    2. Checks that the DataFrame has at least min_row_ct rows.
+    3. Checks that the DataFrame has at least min_col_ct columns.
     """
     ensure_df_headers_unique(df, name)
     logging.debug("Ensured uniqueness of {}.".format(name))
@@ -62,10 +62,10 @@ def validate_df(df, name, min_row_ct, min_col_ct):
 def fix_id(fid):
     """As a temporary measure, escapes certain special characters in a name.
 
-       Right now, a measure like this is required to make Vega* work properly
-       with various field names.
+    Right now, a measure like this is required to make Vega* work properly
+    with various field names.
 
-       See https://github.com/vega/vega-lite/issues/4965.
+    See https://github.com/vega/vega-lite/issues/4965.
     """
 
     new_id = ""
@@ -99,14 +99,14 @@ def escape_columns(df, df_name):
 
 def replace_nan(df, new_nan_val=None):
     """Replaces all occurrences of NaN values in the DataFrame with a specified
-       value.
+    value.
 
-       Note that this solution seems to result in the DataFrame's columns'
-       dtypes being changed to object. (This shouldn't change much due to how
-       we handle metadata files, though.)
+    Note that this solution seems to result in the DataFrame's columns'
+    dtypes being changed to object. (This shouldn't change much due to how
+    we handle metadata files, though.)
 
-       Based on the solution described here:
-       https://stackoverflow.com/a/14163209/10730311
+    Based on the solution described here:
+    https://stackoverflow.com/a/14163209/10730311
     """
     return df.where(df.notna(), new_nan_val)
 
@@ -114,13 +114,13 @@ def replace_nan(df, new_nan_val=None):
 def biom_table_to_sparse_df(table, min_row_ct=2, min_col_ct=1):
     """Loads a BIOM table as a pd.SparseDataFrame. Also calls validate_df().
 
-       We need to use a helper function for this because old versions of BIOM
-       accidentally produce an effectively-dense DataFrame when using
-       biom.Table.to_dataframe() -- see
-       https://github.com/biocore/biom-format/issues/808.
+    We need to use a helper function for this because old versions of BIOM
+    accidentally produce an effectively-dense DataFrame when using
+    biom.Table.to_dataframe() -- see
+    https://github.com/biocore/biom-format/issues/808.
 
-       To get around this, we extract the scipy.sparse.csr_matrix data from the
-       BIOM table and directly convert that to a pandas SparseDataFrame.
+    To get around this, we extract the scipy.sparse.csr_matrix data from the
+    BIOM table and directly convert that to a pandas SparseDataFrame.
     """
     logging.debug("Creating a SparseDataFrame from BIOM table.")
     table_sdf = pd.SparseDataFrame(table.matrix_data, default_fill_value=0.0)
@@ -142,16 +142,16 @@ def remove_empty_samples_and_features(
     table_sdf, sample_metadata_df, feature_ranks_df
 ):
     """Removes empty samples and features from the table, sample metadata, and
-       feature ranks DataFrames.
+    feature ranks DataFrames.
 
-       This should be called *after* matching the table with the sample
-       metadata and feature ranks -- we assume that the columns of the
-       table DataFrame are equivalent to the indices of the sample metadata
-       DataFrame, and that the indices (rows) of the table are also equivalent
-       to the indices of the feature ranks DataFrame.
+    This should be called *after* matching the table with the sample
+    metadata and feature ranks -- we assume that the columns of the
+    table DataFrame are equivalent to the indices of the sample metadata
+    DataFrame, and that the indices (rows) of the table are also equivalent
+    to the indices of the feature ranks DataFrame.
 
-       This will raise a ValueError if the input table is empty (i.e. all
-       samples/features would be removed).
+    This will raise a ValueError if the input table is empty (i.e. all
+    samples/features would be removed).
     """
     logging.debug("Attempting to remove empty samples and features.")
 
@@ -205,38 +205,38 @@ def print_if_dropped(
 ):
     """Prints a message if a given DataFrame has been filtered.
 
-       Essentially, this function just checks if
-       df_old.shape[axis_num] - df_new.shape[axis_num] > 0.
+    Essentially, this function just checks if
+    df_old.shape[axis_num] - df_new.shape[axis_num] > 0.
 
-       If so, this prints a message with a bunch of details (which the _name
-       parameters all describe).
+    If so, this prints a message with a bunch of details (which the _name
+    parameters all describe).
 
-       Parameters
-       ----------
-       df_old: pd.DataFrame (or pd.SparseDataFrame)
-            "Unfiltered" DataFrame -- used as the reference when trying to
-            determine if df_new has been filtered.
+    Parameters
+    ----------
+    df_old: pd.DataFrame (or pd.SparseDataFrame)
+         "Unfiltered" DataFrame -- used as the reference when trying to
+         determine if df_new has been filtered.
 
-       df_new: pd.DataFrame (or pd.SparseDataFrame)
-            A potentially-filtered DataFrame.
+    df_new: pd.DataFrame (or pd.SparseDataFrame)
+         A potentially-filtered DataFrame.
 
-       axis_num: int
-            The axis in the DataFrames' .shapes to check. This should be either
-            0 or 1, but we don't explicitly check for that.
+    axis_num: int
+         The axis in the DataFrames' .shapes to check. This should be either
+         0 or 1, but we don't explicitly check for that.
 
-       item_name: str
-            The name of the "thing" described by the given axis in these
-            DataFrames. In practice, this is either "sample" or "feature".
+    item_name: str
+         The name of the "thing" described by the given axis in these
+         DataFrames. In practice, this is either "sample" or "feature".
 
-       df_name: str
-            The name of the DataFrame represented by df_old and df_new.
+    df_name: str
+         The name of the DataFrame represented by df_old and df_new.
 
-       filter_basis_name: str
-            The name of the other DataFrame which caused these items to be
-            dropped. For example, if we're checking to see if samples were
-            dropped from the sample metadata file due to to samples not being
-            in the BIOM table, df_name could be "sample metadata file" and
-            filter_basis_name could be "BIOM table".
+    filter_basis_name: str
+         The name of the other DataFrame which caused these items to be
+         dropped. For example, if we're checking to see if samples were
+         dropped from the sample metadata file due to to samples not being
+         in the BIOM table, df_name could be "sample metadata file" and
+         filter_basis_name could be "BIOM table".
     """
 
     dropped_item_ct = df_old.shape[axis_num] - df_new.shape[axis_num]
@@ -255,59 +255,59 @@ def print_if_dropped(
 def match_table_and_data(table, feature_ranks, sample_metadata):
     """Matches feature rankings and then sample metadata to a table.
 
-       TODO: Some of the logic in this function for matching the feature ranks
-       and sample metadata could probably be abstracted out to another
-       function. This individual function isn't directly unit-tested, but its
-       behavior should be mostly tested in the "matching" integration tests
-       (...that being said, it'd be a lot easier + sustainable to also add
-       direct unit tests for this function).
+    TODO: Some of the logic in this function for matching the feature ranks
+    and sample metadata could probably be abstracted out to another
+    function. This individual function isn't directly unit-tested, but its
+    behavior should be mostly tested in the "matching" integration tests
+    (...that being said, it'd be a lot easier + sustainable to also add
+    direct unit tests for this function).
 
-       Parameters
-       ----------
+    Parameters
+    ----------
 
-       table: pd.DataFrame (or pd.SparseDataFrame)
-            A DataFrame created from a BIOM table. The index of this DataFrame
-            should correspond to observations (i.e. features), and the columns
-            should correspond to samples.
+    table: pd.DataFrame (or pd.SparseDataFrame)
+         A DataFrame created from a BIOM table. The index of this DataFrame
+         should correspond to observations (i.e. features), and the columns
+         should correspond to samples.
 
-            Note that the input BIOM table might contain features or samples
-            that are not included in feature_ranks or sample_metadata,
-            respectively -- this is totally fine. The opposite, though, is
-            where things get to be a problem: if any of the features in
-            feature_ranks are not present in the table, or if all of the
-            samples in sample_metadata are not in the table, then this will
-            raise errors.
+         Note that the input BIOM table might contain features or samples
+         that are not included in feature_ranks or sample_metadata,
+         respectively -- this is totally fine. The opposite, though, is
+         where things get to be a problem: if any of the features in
+         feature_ranks are not present in the table, or if all of the
+         samples in sample_metadata are not in the table, then this will
+         raise errors.
 
-       feature_ranks: pd.DataFrame
-            A DataFrame describing features' "ranks" along ranking(s). The
-            index of this DataFrame should correspond to feature IDs, and the
-            columns should correspond to different rankings' names.
+    feature_ranks: pd.DataFrame
+         A DataFrame describing features' "ranks" along ranking(s). The
+         index of this DataFrame should correspond to feature IDs, and the
+         columns should correspond to different rankings' names.
 
-       sample_metadata: pd.DataFrame
-            A DataFrame describing sample metadata. The index of this DataFrame
-            should describe sample IDs, and the columns should correspond to
-            different sample metadata fields' names.
+    sample_metadata: pd.DataFrame
+         A DataFrame describing sample metadata. The index of this DataFrame
+         should describe sample IDs, and the columns should correspond to
+         different sample metadata fields' names.
 
-       Returns
-       -------
+    Returns
+    -------
 
-       (m_table, m_sample_metadata): both pd.[Sparse]DataFrame
-            Versions of the input table and sample metadata only containing
-            samples shared by both datasets. The table will also only contain
-            features shared by both the table and the feature ranks.
+    (m_table, m_sample_metadata): both pd.[Sparse]DataFrame
+         Versions of the input table and sample metadata only containing
+         samples shared by both datasets. The table will also only contain
+         features shared by both the table and the feature ranks.
 
-            (None of the features in the feature ranks should be dropped during
-            this operation, so we don't bother returning the feature ranks
-            DataFrame.)
+         (None of the features in the feature ranks should be dropped during
+         this operation, so we don't bother returning the feature ranks
+         DataFrame.)
 
-       Raises
-       ------
+    Raises
+    ------
 
-       If any of the features described in feature_ranks are not present in
-       the table, this will raise a ValueError.
+    If any of the features described in feature_ranks are not present in
+    the table, this will raise a ValueError.
 
-       If all of the samples described in sample_metadata are not present
-       in the table, this will raise a ValueError.
+    If all of the samples described in sample_metadata are not present
+    in the table, this will raise a ValueError.
     """
     logging.debug("Starting matching table with feature ranks.")
     featurefiltered_table, m_feature_ranks = table.align(
@@ -393,31 +393,31 @@ def match_table_and_data(table, feature_ranks, sample_metadata):
 def merge_feature_metadata(feature_ranks, feature_metadata=None):
     """Attempts to merge feature metadata into a feature ranks DataFrame.
 
-       Parameters
-       ----------
+    Parameters
+    ----------
 
-       feature_ranks: pd.DataFrame
-            A DataFrame defining feature rankings, where the index corresponds
-            to feature IDs and the columns correspond to ranking names.
+    feature_ranks: pd.DataFrame
+         A DataFrame defining feature rankings, where the index corresponds
+         to feature IDs and the columns correspond to ranking names.
 
-       feature_metadata: pd.DataFrame or None
-            A DataFrame defining feature metadata, where the index corresponds
-            to feature IDs and the columns correspond to feature metadata
-            names. It isn't expected that every feature ID be passed.
+    feature_metadata: pd.DataFrame or None
+         A DataFrame defining feature metadata, where the index corresponds
+         to feature IDs and the columns correspond to feature metadata
+         names. It isn't expected that every feature ID be passed.
 
-       Returns
-       -------
+    Returns
+    -------
 
-       (output_feature_data, feature_metadata_cols): (pd.DataFrame, list)
-            The input feature ranks DataFrame, with any available feature
-            metadata merged in; and a list of any columns in the feature
-            metadata (or [] if the feature metadata was None).
+    (output_feature_data, feature_metadata_cols): (pd.DataFrame, list)
+         The input feature ranks DataFrame, with any available feature
+         metadata merged in; and a list of any columns in the feature
+         metadata (or [] if the feature metadata was None).
 
-       Raises
-       ------
+    Raises
+    ------
 
-       ValueError: if column name(s) are shared between the feature ranks and
-                   feature metadata DataFrames. See #55 for context.
+    ValueError: if column name(s) are shared between the feature ranks and
+                feature metadata DataFrames. See #55 for context.
     """
     feature_metadata_cols = []
     if feature_metadata is not None:
@@ -443,16 +443,16 @@ def merge_feature_metadata(feature_ranks, feature_metadata=None):
 def sparsify_count_dict(count_dict):
     """Returns a "sparse" representation of a dict of counts data.
 
-       We expect that the input dict is of the format {feature ID: {sample ID:
-       count, sample 2 ID: count, ...}, ...}. In theory you could also totally
-       pass in a transposed dict here (where samples are the "outer layer" of
-       the dict), but the variable names would need to be flipped to make this
-       function make sense. (See #175 on GitHub for context.)
+    We expect that the input dict is of the format {feature ID: {sample ID:
+    count, sample 2 ID: count, ...}, ...}. In theory you could also totally
+    pass in a transposed dict here (where samples are the "outer layer" of
+    the dict), but the variable names would need to be flipped to make this
+    function make sense. (See #175 on GitHub for context.)
 
-       Anyway, this function returns the input dict, but without references to
-       0-count samples for a given feature. (Since we filter out empty
-       features, we expect that every feature should have at least one sample
-       with a nonzero count of that feature.)
+    Anyway, this function returns the input dict, but without references to
+    0-count samples for a given feature. (Since we filter out empty
+    features, we expect that every feature should have at least one sample
+    with a nonzero count of that feature.)
     """
     logging.debug("Sparsifying count data.")
     sparse_count_dict = {}
@@ -471,39 +471,39 @@ def sparsify_count_dict(count_dict):
 def add_sample_presence_count(feature_data, table_sdf):
     """Adds a "qurro_spc" column to a DataFrame of feature information.
 
-       The value in this column corresponds to the number of samples a given
-       feature is present in, as determined by the count data given in the
-       table_sdf argument.
+    The value in this column corresponds to the number of samples a given
+    feature is present in, as determined by the count data given in the
+    table_sdf argument.
 
-       Parameters
-       ----------
+    Parameters
+    ----------
 
-       feature_data: pd.DataFrame
-            A DataFrame containing some sort of feature information. At the
-            point in Qurro this is called, this will likely include both
-            feature ranking information and feature metadata information.
+    feature_data: pd.DataFrame
+         A DataFrame containing some sort of feature information. At the
+         point in Qurro this is called, this will likely include both
+         feature ranking information and feature metadata information.
 
-       table_sdf: pd.SparseDataFrame
-            Representation of a BIOM table containing count data. The index
-            contains feature IDs, and the columns contain sample IDs.
-            This table should only contain samples that will be used in the
-            Qurro visualization (i.e. this table should be the output of all
-            the matching, filtering, removing empty, etc. steps), since the
-            presence of irrelevant samples will result in inaccurate SPC values
-            being computed.
+    table_sdf: pd.SparseDataFrame
+         Representation of a BIOM table containing count data. The index
+         contains feature IDs, and the columns contain sample IDs.
+         This table should only contain samples that will be used in the
+         Qurro visualization (i.e. this table should be the output of all
+         the matching, filtering, removing empty, etc. steps), since the
+         presence of irrelevant samples will result in inaccurate SPC values
+         being computed.
 
-       Returns
-       -------
+    Returns
+    -------
 
-       output_feature_data: pd.DataFrame
-            feature_data, with a qurro_spc column added.
+    output_feature_data: pd.DataFrame
+         feature_data, with a qurro_spc column added.
 
-       Raises
-       ------
+    Raises
+    ------
 
-       ValueError: if feature_data already contains a column named "qurro_spc".
-                   (Assuming you've already called check_column_names() on this
-                   data this shouldn't be a problem, but this checks anyway.)
+    ValueError: if feature_data already contains a column named "qurro_spc".
+                (Assuming you've already called check_column_names() on this
+                data this shouldn't be a problem, but this checks anyway.)
     """
     # Convert the table into a presence-absence representation (every count
     # value > 0 is replaced with 1).
@@ -534,8 +534,8 @@ def add_sample_presence_count(feature_data, table_sdf):
 def check_column_names(sample_metadata, feature_ranks, feature_metadata=None):
     """Checks that column names in input data will work properly in Qurro.
 
-       See https://github.com/biocore/qurro/issues/55 for a list of these
-       restrictions.
+    See https://github.com/biocore/qurro/issues/55 for a list of these
+    restrictions.
     """
 
     sugg = " Try changing the name of this column."
@@ -591,53 +591,55 @@ def check_column_names(sample_metadata, feature_ranks, feature_metadata=None):
 
 
 def vibe_check(
-    feature_ranks, table_sdf, safe_range=[-9007199254740991, 9007199254740991],
+    feature_ranks,
+    table_sdf,
+    safe_range=[-9007199254740991, 9007199254740991],
 ):
     """Returns an error if the input data can't be safely used in Qurro as is.
 
-       Our definition of "safe" here is that none of these DataFrames contain
-       any numeric values that are outside the specified safe numeric range. By
-       default, this range is [-(2**53 - 1), (2**53 - 1)].
+    Our definition of "safe" here is that none of these DataFrames contain
+    any numeric values that are outside the specified safe numeric range. By
+    default, this range is [-(2**53 - 1), (2**53 - 1)].
 
-       Primarily, this is useful for validating the BIOM table and feature
-       rankings. I imagine the presence of things like numeric IDs in the
-       metadata will make this hard to properly screen for without introducing
-       a ton of false positives, which will annoy people; maybe we can make the
-       simplifying assumption that if your data is in a categorical metadata
-       column then you don't care about its numeric representation?
+    Primarily, this is useful for validating the BIOM table and feature
+    rankings. I imagine the presence of things like numeric IDs in the
+    metadata will make this hard to properly screen for without introducing
+    a ton of false positives, which will annoy people; maybe we can make the
+    simplifying assumption that if your data is in a categorical metadata
+    column then you don't care about its numeric representation?
 
-       Parameters
-       ----------
+    Parameters
+    ----------
 
-       feature_ranks: pd.DataFrame
-            A DataFrame defining feature rankings, where the index corresponds
-            to feature IDs and the columns correspond to ranking names.
-            Critically, every entry in this should be numeric.
+    feature_ranks: pd.DataFrame
+         A DataFrame defining feature rankings, where the index corresponds
+         to feature IDs and the columns correspond to ranking names.
+         Critically, every entry in this should be numeric.
 
-       table_sdf: pd.DataFrame (or pd.SparseDataFrame)
-            DataFrame representation of a feature table. Similarly to the
-            feature rankings, every entry in this should be numeric.
+    table_sdf: pd.DataFrame (or pd.SparseDataFrame)
+         DataFrame representation of a feature table. Similarly to the
+         feature rankings, every entry in this should be numeric.
 
-       safe_range: collection with exactly two entries
-            The first entry in the safe_range specifies the minimum value we
-            allow, and the second entry specifies the maximum value we allow.
-            Any numbers outside of this range are deemed to "fail the vibe
-            check," in internet meme parlance circa autumn 2019.
+    safe_range: collection with exactly two entries
+         The first entry in the safe_range specifies the minimum value we
+         allow, and the second entry specifies the maximum value we allow.
+         Any numbers outside of this range are deemed to "fail the vibe
+         check," in internet meme parlance circa autumn 2019.
 
-       Returns
-       -------
+    Returns
+    -------
 
-       None
+    None
 
-       Raises
-       ------
+    Raises
+    ------
 
-       ValueError: if safe_range does not contain exactly two entries, or
-                   if the second entry in safe_range is less than or equal to
-                   the first entry in safe_range
+    ValueError: if safe_range does not contain exactly two entries, or
+                if the second entry in safe_range is less than or equal to
+                the first entry in safe_range
 
-       OverflowError: if the feature rankings or BIOM table inputs contain any
-                      numbers outside of the specified safe range
+    OverflowError: if the feature rankings or BIOM table inputs contain any
+                   numbers outside of the specified safe range
     """
     if len(safe_range) != 2:
         raise ValueError("safe_range must have a length of 2.")

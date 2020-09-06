@@ -34,11 +34,11 @@ def run_integration_test(
 ):
     """Runs qurro, and validates the output somewhat.
 
-       Note that this is a pretty outdated function (as in, it doesn't support
-       checking many of the corner cases/etc. that happen when running Qurro).
-       The main purpose of this function is just checking at a high level that
-       things look good, and that data is faithfully represented in the output
-       main.js file.
+    Note that this is a pretty outdated function (as in, it doesn't support
+    checking many of the corner cases/etc. that happen when running Qurro).
+    The main purpose of this function is just checking at a high level that
+    things look good, and that data is faithfully represented in the output
+    main.js file.
     """
 
     in_dir = os.path.join("qurro", "tests", "input", input_dir_name)
@@ -132,24 +132,24 @@ def validate_standalone_result(
 ):
     """Validates the result (exit code and output) of running rrv standalone.
 
-       Parameters
-       ----------
-       result: click.testing.Result
-          This is returned from click's CliRunner.invoke() method.
+    Parameters
+    ----------
+    result: click.testing.Result
+       This is returned from click's CliRunner.invoke() method.
 
-       expected_unsupported_samples: int
-          The number of samples expected to be unsupported in the BIOM table.
-          Defaults to 0 (i.e. all samples are expected to be supported).
+    expected_unsupported_samples: int
+       The number of samples expected to be unsupported in the BIOM table.
+       Defaults to 0 (i.e. all samples are expected to be supported).
 
-       expect_all_unsupported_samples: bool
-          Whether or not to expect *all* samples to be unsupported in the BIOM
-          table. Defaults to False (i.e. at least one sample is expected to be
-          supported). If this is set to True, expected_unsupported_samples will
-          not be used.
+    expect_all_unsupported_samples: bool
+       Whether or not to expect *all* samples to be unsupported in the BIOM
+       table. Defaults to False (i.e. at least one sample is expected to be
+       supported). If this is set to True, expected_unsupported_samples will
+       not be used.
 
-       expected_unsupported_featuress: int
-          The number of features expected to be unsupported in the BIOM table.
-          Defaults to 0 (i.e. all features are expected to be supported).
+    expected_unsupported_featuress: int
+       The number of features expected to be unsupported in the BIOM table.
+       Defaults to 0 (i.e. all features are expected to be supported).
     """
     # NOTE: we expect an error with unsupported feature(s) to take precedence
     # over an error with all unsupported samples. There isn't a super complex
@@ -192,22 +192,22 @@ def validate_standalone_result(
 def validate_main_js(out_dir, rloc, tloc, sloc, validate_jsons=True):
     """Takes care of extracting JSONs from main.js and validating them.
 
-       Parameters
-       ----------
-       out_dir: str
-           The output directory (containing the various "support files" of a
-           qurro visualization, including main.js).
+    Parameters
+    ----------
+    out_dir: str
+        The output directory (containing the various "support files" of a
+        qurro visualization, including main.js).
 
-       rloc, tloc, sloc: str
-           Paths to the ranks file (either DEICODE or songbird), BIOM table,
-           and sample metadata file used as input to qurro.
+    rloc, tloc, sloc: str
+        Paths to the ranks file (either DEICODE or songbird), BIOM table,
+        and sample metadata file used as input to qurro.
 
-       validate_jsons: bool
-           If True (default), this calls validate_rank_plot_json() and
-           validate_sample_plot_json(). If False, this will skip that step --
-           this is useful for if the test leaves the JSONs in an unexpected
-           state (e.g. with certain features or samples dropped out due to,
-           say, the -x argument having been passed).
+    validate_jsons: bool
+        If True (default), this calls validate_rank_plot_json() and
+        validate_sample_plot_json(). If False, this will skip that step --
+        this is useful for if the test leaves the JSONs in an unexpected
+        state (e.g. with certain features or samples dropped out due to,
+        say, the -x argument having been passed).
     """
 
     main_loc = os.path.join(out_dir, "main.js")
@@ -224,22 +224,22 @@ def validate_main_js(out_dir, rloc, tloc, sloc, validate_jsons=True):
 def validate_samples_supported_output(output, expected_unsupported_samples):
     """Checks that the correct message has been based on BIOM sample support.
 
-       Also, this function is pretty old (it assumes the only way samples will
-       be dropped is from the sample metadata file -- not the other way around,
-       which is allowed). It might be worth updating this in the future, but
-       honestly some of the details in these integration tests are pretty old
-       (and it'd be easier to mostly just use unit tests).
+    Also, this function is pretty old (it assumes the only way samples will
+    be dropped is from the sample metadata file -- not the other way around,
+    which is allowed). It might be worth updating this in the future, but
+    honestly some of the details in these integration tests are pretty old
+    (and it'd be easier to mostly just use unit tests).
 
-       Parameters
-       ----------
-       output: str
-          All of the printed output from running qurro.
-          This can be obtained as result.output, if result is the return value
-          of click's CliRunner.invoke().
+    Parameters
+    ----------
+    output: str
+       All of the printed output from running qurro.
+       This can be obtained as result.output, if result is the return value
+       of click's CliRunner.invoke().
 
-       expected_unsupported_samples: int
-          The number of samples expected to be unsupported in the BIOM table.
-          If 0, expects all samples to be supported.
+    expected_unsupported_samples: int
+       The number of samples expected to be unsupported in the BIOM table.
+       If 0, expects all samples to be supported.
     """
     if expected_unsupported_samples > 0:
         expected_msg = (
@@ -404,11 +404,11 @@ def validate_sample_plot_json(
 
 def get_data_from_plot_json(plot_json, id_field="Sample ID"):
     """Given a plot JSON dict, returns a dict where each key corresponds
-       to another dict containing all metadata fields for that [sample /
-       feature].
+    to another dict containing all metadata fields for that [sample /
+    feature].
 
-       This code is based on the procedure described here:
-       https://stackoverflow.com/a/5236375/10730311
+    This code is based on the procedure described here:
+    https://stackoverflow.com/a/5236375/10730311
     """
     plot_json_copy = copy.deepcopy(plot_json)
     data = {}
@@ -424,9 +424,9 @@ def get_data_from_plot_json(plot_json, id_field="Sample ID"):
 def validate_sample_stats_test_sample_plot_json(sample_json):
     """This checks that the sample metadata for this test was perfectly read.
 
-       This should already be guaranteed due to the Qurro python metadata tests
-       and validate_sample_plot_json() being done during
-       run_integration_test(), but we might as well be extra safe.
+    This should already be guaranteed due to the Qurro python metadata tests
+    and validate_sample_plot_json() being done during
+    run_integration_test(), but we might as well be extra safe.
     """
     dn = sample_json["data"]["name"]
     for sample in sample_json["datasets"][dn]:

@@ -11,10 +11,10 @@ from qurro._metadata_utils import read_metadata_file
 def test_read_metadata_file_basic():
     """Tests that read_metadata_file() works + handles bools ok.
 
-       Mainly, we're checking here that True / False values get (eventually)
-       treated as strings, NOT as bools. This preserves their "case" (i.e. they
-       won't get turned into true / false in the JS side of things), and
-       reduces headaches for us all around.
+    Mainly, we're checking here that True / False values get (eventually)
+    treated as strings, NOT as bools. This preserves their "case" (i.e. they
+    won't get turned into true / false in the JS side of things), and
+    reduces headaches for us all around.
     """
     simple_md = os.path.join(
         "qurro", "tests", "input", "metadata_tests", "md1.tsv"
@@ -132,7 +132,7 @@ def test_read_metadata_file_extra_col():
 
 def test_read_metadata_file_whitespace_stripping():
     """Tests that whitespace is properly stripped when reading a metadata
-       file.
+    file.
     """
 
     ws = os.path.join(

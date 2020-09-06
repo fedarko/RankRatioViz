@@ -151,15 +151,15 @@ class TestErrors:
     def test_no_common_samples(self):
         """No samples with both numerator and denominator features.
 
-           -----------------------------------------------
-          |                    S0    S1    S2    S3    S4 |
-          | F0/Charmander       0     1    10     0     0 |
-          | F1/Charmeleon       0     2    15     0     0 |
-          | F2/Charizard        0     4     7     0     0 |
-          | F3/Bulbasaur        5     0     0     0     6 |
-          | F4/Ivysaur          7     0     0     0     4 |
-          | F5/Vensaur          9     0     0     0     2 |
-           -----------------------------------------------
+         -----------------------------------------------
+        |                    S0    S1    S2    S3    S4 |
+        | F0/Charmander       0     1    10     0     0 |
+        | F1/Charmeleon       0     2    15     0     0 |
+        | F2/Charizard        0     4     7     0     0 |
+        | F3/Bulbasaur        5     0     0     0     6 |
+        | F4/Ivysaur          7     0     0     0     4 |
+        | F5/Vensaur          9     0     0     0     2 |
+         -----------------------------------------------
         """
         samps = ["S{}".format(i) for i in range(5)]
         feats = ["F{}".format(i) for i in range(6)]
@@ -275,7 +275,10 @@ class TestIrregularData:
         is removed from the table or the taxonomy.
         """
         num_df, denom_df = filter_and_join_taxonomy(
-            table, taxonomy, "Char", "saur",
+            table,
+            taxonomy,
+            "Char",
+            "saur",
         )
         assert "F5" not in num_df.index
 
@@ -298,11 +301,13 @@ class TestIrregularData:
 
         # test that num/denom df accurately extract values from table
         _check_dataframe_equality(
-            table_num_taxon_filt, num_df_taxon_filt,
+            table_num_taxon_filt,
+            num_df_taxon_filt,
         )
 
         _check_dataframe_equality(
-            table_denom_taxon_filt, denom_df_taxon_filt,
+            table_denom_taxon_filt,
+            denom_df_taxon_filt,
         )
 
     def test_taxonomy_missing_features(self, get_testing_data):
@@ -337,7 +342,10 @@ class TestIrregularData:
         table = table.apply(lambda x: x.astype(np.float64))
 
         num_df, denom_df = filter_and_join_taxonomy(
-            table, taxonomy, "Char", "saur",
+            table,
+            taxonomy,
+            "Char",
+            "saur",
         )
 
         num_features = ["F3", "F4", "F5"]
@@ -352,11 +360,13 @@ class TestIrregularData:
         # test that num/denom df accurately extract table values for
         # Overlap1 and Overlap2
         _check_dataframe_equality(
-            table_num_taxon_filt, num_df_taxon_filt,
+            table_num_taxon_filt,
+            num_df_taxon_filt,
         )
 
         _check_dataframe_equality(
-            table_denom_taxon_filt, denom_df_taxon_filt,
+            table_denom_taxon_filt,
+            denom_df_taxon_filt,
         )
 
     def test_taxon_as_sample_name(self, get_testing_data):
@@ -366,7 +376,10 @@ class TestIrregularData:
         table["Taxon"] = table["Taxon"].astype(np.float64)
 
         num_df, denom_df = filter_and_join_taxonomy(
-            table, get_testing_data.taxonomy, "Char", "saur",
+            table,
+            get_testing_data.taxonomy,
+            "Char",
+            "saur",
         )
 
         # test that num/denom df accurately extract table values for Taxon
@@ -380,11 +393,13 @@ class TestIrregularData:
         denom_df_taxon_filt = denom_df.loc[denom_features]
 
         _check_dataframe_equality(
-            num_df_taxon_filt, table_num_taxon_filt,
+            num_df_taxon_filt,
+            table_num_taxon_filt,
         )
 
         _check_dataframe_equality(
-            denom_df_taxon_filt, table_denom_taxon_filt,
+            denom_df_taxon_filt,
+            table_denom_taxon_filt,
         )
 
     def test_large_numbers(self):
@@ -436,7 +451,12 @@ class TestIrregularData:
         taxonomy.columns = ["feature-id", "Taxon", "Confidence"]
         taxonomy.set_index("feature-id", inplace=True, drop=True)
 
-        q = qarcoal(table, taxonomy, "Char", "saur",)
+        q = qarcoal(
+            table,
+            taxonomy,
+            "Char",
+            "saur",
+        )
         wolfram_alpha_vals = np.array([-21.9188, -30.9458, -7.07556])
         qarcoal_vals = q.sort_index()["log_ratio"].to_numpy()
         diff = wolfram_alpha_vals - qarcoal_vals

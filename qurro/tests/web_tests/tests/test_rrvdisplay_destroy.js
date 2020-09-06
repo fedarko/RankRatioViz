@@ -71,6 +71,9 @@ define(["vega", "dom_utils", "mocha", "chai", "testing_utilities"], function (
             // calling destroy()
             await document.getElementById("borderCheckbox").click();
             await document.getElementById("boxplotCheckbox").click();
+            await document
+                .getElementById("exclSMFieldsInExportCheckbox")
+                .click();
             document.getElementById("topSearchType").value = "rank";
             document.getElementById("botSearchType").value = "rank";
             document.getElementById("topText").value = "Test top search text";
@@ -108,6 +111,9 @@ define(["vega", "dom_utils", "mocha", "chai", "testing_utilities"], function (
             );
             chai.assert.isFalse(
                 document.getElementById("boxplotCheckbox").checked
+            );
+            chai.assert.isFalse(
+                document.getElementById("exclSMFieldsInExportCheckbox").checked
             );
             // Check that boxplot mode "disabled" elements were enabled
             chai.assert.isFalse(document.getElementById("colorField").disabled);

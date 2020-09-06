@@ -76,55 +76,55 @@ def process_input(
 ):
     """Validates/processes the input files and parameter(s) to Qurro.
 
-       In particular, this function
+    In particular, this function
 
-       1. Calls validate_df() and then check_column_names() on all of the
-          input DataFrames passed (feature ranks, sample metadata, feature
-          metadata if passed).
+    1. Calls validate_df() and then check_column_names() on all of the
+       input DataFrames passed (feature ranks, sample metadata, feature
+       metadata if passed).
 
-       2. Calls replace_nan() on the metadata DataFrame(s), so that all
-          missing values are represented consistently with a None (which
-          will be represented as a null in JSON/JavaScript).
+    2. Calls replace_nan() on the metadata DataFrame(s), so that all
+       missing values are represented consistently with a None (which
+       will be represented as a null in JSON/JavaScript).
 
-       3. Converts the BIOM table to a SparseDataFrame by calling
-          biom_table_to_sparse_df().
+    3. Converts the BIOM table to a SparseDataFrame by calling
+       biom_table_to_sparse_df().
 
-       4. Runs vibe_check() on the feature ranks and BIOM table to ensure
-          that numbers are within the range of safe IEEE 754 numbers for
-          JavaScript. NOTE: STILL NEED TO CHECK METADATA USING THIS SOMEHOW
+    4. Runs vibe_check() on the feature ranks and BIOM table to ensure
+       that numbers are within the range of safe IEEE 754 numbers for
+       JavaScript. NOTE: STILL NEED TO CHECK METADATA USING THIS SOMEHOW
 
-       5. Matches up the table with the feature ranks and sample metadata by
-          calling match_table_and_data().
+    5. Matches up the table with the feature ranks and sample metadata by
+       calling match_table_and_data().
 
-       6. Calls filter_unextreme_features() using the provided
-          extreme_feature_count. (If it's None, then nothing will be done.)
+    6. Calls filter_unextreme_features() using the provided
+       extreme_feature_count. (If it's None, then nothing will be done.)
 
-       7. Calls remove_empty_samples_and_features() to filter empty samples
-          (and features). This is purposefully done *after*
-          filter_unextreme_features() is called.
+    7. Calls remove_empty_samples_and_features() to filter empty samples
+       (and features). This is purposefully done *after*
+       filter_unextreme_features() is called.
 
-       8. Calls merge_feature_metadata() on the feature ranks and feature
-          metadata. (If feature metadata is None, nothing will be done.)
+    8. Calls merge_feature_metadata() on the feature ranks and feature
+       metadata. (If feature metadata is None, nothing will be done.)
 
-       Returns
-       -------
-       output_metadata: pd.DataFrame
-            Sample metadata, but matched with the table and with empty samples
-            removed.
+    Returns
+    -------
+    output_metadata: pd.DataFrame
+         Sample metadata, but matched with the table and with empty samples
+         removed.
 
-       output_ranks: pd.DataFrame
-            Feature ranks, post-filtering and with feature metadata columns
-            added in.
+    output_ranks: pd.DataFrame
+         Feature ranks, post-filtering and with feature metadata columns
+         added in.
 
-       ranking_ids
-            The ranking columns' names in output_ranks.
+    ranking_ids
+         The ranking columns' names in output_ranks.
 
-       feature_metadata_cols: list
-            The feature metadata columns' names in output_ranks.
+    feature_metadata_cols: list
+         The feature metadata columns' names in output_ranks.
 
-       output_table: pd.SparseDataFrame
-            The BIOM table, post matching with the feature ranks and sample
-            metadata and with empty samples removed.
+    output_table: pd.SparseDataFrame
+         The BIOM table, post matching with the feature ranks and sample
+         metadata and with empty samples removed.
     """
 
     logging.debug("Starting processing input.")
@@ -454,12 +454,12 @@ def gen_visualization(
 ):
     """Creates a Qurro visualization from already-processed-and-validated data.
 
-       Returns
-       -------
+    Returns
+    -------
 
-       index_path: str
-            A path to the index.html file for the output visualization. This is
-            needed when calling q2templates.render().
+    index_path: str
+         A path to the index.html file for the output visualization. This is
+         needed when calling q2templates.render().
     """
 
     # https://altair-viz.github.io/user_guide/faq.html#disabling-maxrows

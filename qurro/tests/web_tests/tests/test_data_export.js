@@ -13,7 +13,7 @@ define(["display", "mocha", "chai", "testing_utilities"], function (
     var countJSON = {"Taxon1": {"Sample2": 1.0, "Sample3": 2.0, "Sample5": 4.0, "Sample6": 5.0, "Sample7": 6.0}, "Taxon2": {"Sample1": 6.0, "Sample2": 5.0, "Sample3": 4.0, "Sample5": 2.0, "Sample6": 1.0}, "Taxon3": {"Sample1": 2.0, "Sample2": 3.0, "Sample3": 4.0, "Sample5": 4.0, "Sample6": 3.0, "Sample7": 2.0}, "Taxon4": {"Sample1": 1.0, "Sample2": 1.0, "Sample3": 1.0, "Sample5": 1.0, "Sample6": 1.0, "Sample7": 1.0}, "Taxon5": {"Sample3": 1.0, "Sample5": 2.0}};
     describe("Exporting sample plot data", function () {
         var rrv, dataName;
-        before(async function () {
+        beforeEach(async function () {
             rrv = testing_utilities.getNewRRVDisplay(
                 rankPlotJSON,
                 samplePlotJSON,
@@ -22,88 +22,172 @@ define(["display", "mocha", "chai", "testing_utilities"], function (
             dataName = rrv.samplePlotJSON.data.name;
             await rrv.makePlots();
         });
-        after(async function () {
+        afterEach(async function () {
             await rrv.destroy(true, true, true);
         });
-        it("Works properly even when all samples' balances are null", function () {
-            before(function () {
-                // set balances to null, mimicking the state of the JSON before any
-                // features have been selected
-                for (
-                    var i = 0;
-                    i < rrv.samplePlotJSON.datasets[dataName].length;
-                    i++
-                ) {
-                    rrv.samplePlotJSON.datasets[dataName][
-                        i
-                    ].qurro_balance = null;
-                }
-            });
-            var expectedTSV =
-                '"Sample ID"\tCurrent_Natural_Log_Ratio\tMetadata1\tMetadata1\n' +
-                "Sample1\tnull\t1\t1\n" +
-                "Sample2\tnull\t4\t4\n" +
-                "Sample3\tnull\t7\t7\n" +
-                "Sample5\tnull\t13\t13\n" +
-                "Sample6\tnull\t16\t16\n" +
-                "Sample7\tnull\t19\t19";
-            var outputTSV = rrv.getSamplePlotData("Metadata1", "Metadata1");
-            chai.assert.equal(expectedTSV, outputTSV);
+        var setAllToNull = function () {
+            // set balances to null, mimicking the state of the JSON
+            // before any features have been selected
+            for (
+                var i = 0;
+                i < rrv.samplePlotJSON.datasets[dataName].length;
+                i++
+            ) {
+                rrv.samplePlotJSON.datasets[dataName][i].qurro_balance = null;
+            }
+        };
+        describe("'Exclude metadata fields' is false", function () {
+            it("Works properly even when all samples' balances are null", function () {
+                before(setAllToNull);
+                var expectedTSV =
+                    '"Sample ID"\tCurrent_Natural_Log_Ratio\tMetadata1\tMetadata1\n' +
+                    "Sample1\tnull\t1\t1\n" +
+                    "Sample2\tnull\t4\t4\n" +
+                    "Sample3\tnull\t7\t7\n" +
+                    "Sample5\tnull\t13\t13\n" +
+                    "Sample6\tnull\t16\t16\n" +
+                    "Sample7\tnull\t19\t19";
+                var outputTSV = rrv.getSamplePlotData("Metadata1", "Metadata1");
+                chai.assert.equal(expectedTSV, outputTSV);
 
-            var expectedTSV2 =
-                '"Sample ID"\tCurrent_Natural_Log_Ratio\tMetadata1\t"Sample ID"\n' +
-                "Sample1\tnull\t1\tSample1\n" +
-                "Sample2\tnull\t4\tSample2\n" +
-                "Sample3\tnull\t7\tSample3\n" +
-                "Sample5\tnull\t13\tSample5\n" +
-                "Sample6\tnull\t16\tSample6\n" +
-                "Sample7\tnull\t19\tSample7";
-            var outputTSV2 = rrv.getSamplePlotData("Metadata1", "Sample ID");
-            chai.assert.equal(expectedTSV2, outputTSV2);
+                var expectedTSV2 =
+                    '"Sample ID"\tCurrent_Natural_Log_Ratio\tMetadata1\t"Sample ID"\n' +
+                    "Sample1\tnull\t1\tSample1\n" +
+                    "Sample2\tnull\t4\tSample2\n" +
+                    "Sample3\tnull\t7\tSample3\n" +
+                    "Sample5\tnull\t13\tSample5\n" +
+                    "Sample6\tnull\t16\tSample6\n" +
+                    "Sample7\tnull\t19\tSample7";
+                var outputTSV2 = rrv.getSamplePlotData(
+                    "Metadata1",
+                    "Sample ID"
+                );
+                chai.assert.equal(expectedTSV2, outputTSV2);
+            });
+            describe("Works properly when balances are directly set", function () {
+                // Update sample plot balances directly.
+                // Even samples with a "null" balance (i.e. not currently drawn
+                // in the sample plot) are included in the exported data. Some
+                // of the comments in the code claimed that these samples were
+                // getting filtered out, but that is no longer the case.
+                beforeEach(function () {
+                    rrv.samplePlotJSON.datasets[dataName][0].qurro_balance = 1;
+                    rrv.samplePlotJSON.datasets[
+                        dataName
+                    ][1].qurro_balance = null;
+                    rrv.samplePlotJSON.datasets[dataName][2].qurro_balance = 3;
+                    rrv.samplePlotJSON.datasets[
+                        dataName
+                    ][3].qurro_balance = null;
+                    rrv.samplePlotJSON.datasets[
+                        dataName
+                    ][4].qurro_balance = 6.5;
+                    rrv.samplePlotJSON.datasets[dataName][5].qurro_balance = 7;
+                });
+                it("Works properly when normal metadata categories used", function () {
+                    var expectedTSV =
+                        '"Sample ID"\tCurrent_Natural_Log_Ratio\tMetadata1\tMetadata3\n' +
+                        "Sample1\t1\t1\t3\n" +
+                        "Sample2\tnull\t4\t6\n" +
+                        "Sample3\t3\t7\t9\n" +
+                        "Sample5\tnull\t13\t15\n" +
+                        "Sample6\t6.5\t16\t18\n" +
+                        "Sample7\t7\t19\t21";
+                    var outputTSV = rrv.getSamplePlotData(
+                        "Metadata1",
+                        "Metadata3"
+                    );
+                    chai.assert.equal(expectedTSV, outputTSV);
+                });
+                it("Works properly when sample ID is used", function () {
+                    var expectedTSV =
+                        '"Sample ID"\tCurrent_Natural_Log_Ratio\t"Sample ID"\t"Sample ID"\n' +
+                        "Sample1\t1\tSample1\tSample1\n" +
+                        "Sample2\tnull\tSample2\tSample2\n" +
+                        "Sample3\t3\tSample3\tSample3\n" +
+                        "Sample5\tnull\tSample5\tSample5\n" +
+                        "Sample6\t6.5\tSample6\tSample6\n" +
+                        "Sample7\t7\tSample7\tSample7";
+                    var outputTSV = rrv.getSamplePlotData(
+                        "Sample ID",
+                        "Sample ID"
+                    );
+                    chai.assert.equal(expectedTSV, outputTSV);
+                });
+            });
+            // TODO: Ideally we'd test this by selecting features, but the above
+            // tests are good enough
+            it(
+                "Works properly when balances are set from user-based selection"
+            );
         });
-        describe("Works properly when balances are directly set", function () {
-            /* Update sample plot balances directly.
-             * Most of the balances are set to normal numbers, but two samples'
-             * balances are set to null in order to test filtering of
-             * some samples without "proper" balances -- i.e. undrawn samples,
-             * which should be omitted from the exported data.
-             */
-            before(function () {
-                rrv.samplePlotJSON.datasets[dataName][0].qurro_balance = 1;
-                rrv.samplePlotJSON.datasets[dataName][1].qurro_balance = null;
-                rrv.samplePlotJSON.datasets[dataName][2].qurro_balance = 3;
-                rrv.samplePlotJSON.datasets[dataName][3].qurro_balance = null;
-                rrv.samplePlotJSON.datasets[dataName][4].qurro_balance = 6.5;
-                rrv.samplePlotJSON.datasets[dataName][5].qurro_balance = 7;
+        describe("'Exclude metadata fields' is true (for merging log-ratios with sample metadata)", function () {
+            beforeEach(function () {
+                rrv.exclSMFieldsInExport = true;
             });
-            it("Works properly when normal metadata categories used", function () {
+            it("Works properly even when all samples' balances are null", function () {
+                before(setAllToNull);
                 var expectedTSV =
-                    '"Sample ID"\tCurrent_Natural_Log_Ratio\tMetadata1\tMetadata3\n' +
-                    "Sample1\t1\t1\t3\n" +
-                    "Sample2\tnull\t4\t6\n" +
-                    "Sample3\t3\t7\t9\n" +
-                    "Sample5\tnull\t13\t15\n" +
-                    "Sample6\t6.5\t16\t18\n" +
-                    "Sample7\t7\t19\t21";
-                var outputTSV = rrv.getSamplePlotData("Metadata1", "Metadata3");
+                    '"Sample ID"\tCurrent_Natural_Log_Ratio\n' +
+                    "Sample1\tnull\n" +
+                    "Sample2\tnull\n" +
+                    "Sample3\tnull\n" +
+                    "Sample5\tnull\n" +
+                    "Sample6\tnull\n" +
+                    "Sample7\tnull";
+                var outputTSV = rrv.getSamplePlotData("Metadata1", "Metadata1");
                 chai.assert.equal(expectedTSV, outputTSV);
+
+                // The selected x-axis / color fields really shouldn't change
+                // anything, since they're excluded from the exported data :)
+                var outputTSV2 = rrv.getSamplePlotData(
+                    "Metadata1",
+                    "Sample ID"
+                );
+                chai.assert.equal(expectedTSV, outputTSV2);
+                var outputTSV3 = rrv.getSamplePlotData(
+                    "Sample ID",
+                    "Sample ID"
+                );
+                chai.assert.equal(expectedTSV, outputTSV3);
             });
-            it("Works properly when sample ID is used", function () {
-                var expectedTSV =
-                    '"Sample ID"\tCurrent_Natural_Log_Ratio\t"Sample ID"\t"Sample ID"\n' +
-                    "Sample1\t1\tSample1\tSample1\n" +
-                    "Sample2\tnull\tSample2\tSample2\n" +
-                    "Sample3\t3\tSample3\tSample3\n" +
-                    "Sample5\tnull\tSample5\tSample5\n" +
-                    "Sample6\t6.5\tSample6\tSample6\n" +
-                    "Sample7\t7\tSample7\tSample7";
-                var outputTSV = rrv.getSamplePlotData("Sample ID", "Sample ID");
-                chai.assert.equal(expectedTSV, outputTSV);
+            describe("Works properly when balances are directly set", function () {
+                beforeEach(function () {
+                    rrv.samplePlotJSON.datasets[dataName][0].qurro_balance = 1;
+                    rrv.samplePlotJSON.datasets[
+                        dataName
+                    ][1].qurro_balance = null;
+                    rrv.samplePlotJSON.datasets[dataName][2].qurro_balance = 3;
+                    rrv.samplePlotJSON.datasets[
+                        dataName
+                    ][3].qurro_balance = null;
+                    rrv.samplePlotJSON.datasets[
+                        dataName
+                    ][4].qurro_balance = 6.5;
+                    rrv.samplePlotJSON.datasets[dataName][5].qurro_balance = 7;
+                });
+                it("Works properly, regardless of selected sample metadata fields", function () {
+                    var expectedTSV =
+                        '"Sample ID"\tCurrent_Natural_Log_Ratio\n' +
+                        "Sample1\t1\n" +
+                        "Sample2\tnull\n" +
+                        "Sample3\t3\n" +
+                        "Sample5\tnull\n" +
+                        "Sample6\t6.5\n" +
+                        "Sample7\t7";
+                    var outputTSV = rrv.getSamplePlotData(
+                        "Metadata1",
+                        "Metadata3"
+                    );
+                    chai.assert.equal(expectedTSV, outputTSV);
+                    var outputTSV2 = rrv.getSamplePlotData(
+                        "Sample ID",
+                        "Sample ID"
+                    );
+                    chai.assert.equal(expectedTSV, outputTSV2);
+                });
             });
         });
-        // TODO: Ideally we'd test this by selecting features, but this
-        // works also as a temporary measure
-        it("Works properly when balances are set from user-based selection");
 
         describe("Quoting TSV fields", function () {
             // Quick way to avoid writing out "display.RRVDisplay..." every

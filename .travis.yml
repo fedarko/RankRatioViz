@@ -44,7 +44,9 @@ install:
     # developing qurro, but aren't required to just use qurro
     - npm install -g mocha-headless-chrome
     - npm install -g jshint
-    - npm install -g prettier
+    # Pinning prettier to avoid having to update everything
+    # This is also currently done in Empress' travis YAML
+    - npm install -g prettier@2.0.5
     - npm install -g nyc
 script:
     # Just to be safe

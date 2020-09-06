@@ -24,9 +24,9 @@ def differential_plot(
 ) -> None:
     """Generates a Qurro visualization using differentials.
 
-       (...Also, the reason the order of parameters here differs from
-       qurro/scripts/_plot.py is that the first parameter has to be
-       output_dir: str, per QIIME 2's plugin requirements.)
+    (...Also, the reason the order of parameters here differs from
+    qurro/scripts/_plot.py is that the first parameter has to be
+    output_dir: str, per QIIME 2's plugin requirements.)
     """
 
     create_q2_visualization(
